@@ -8,6 +8,14 @@ class file_management:
         features = ["Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin","BMI","DiabetesPedigreeFunction","Age"]
         self.x = self.data[features].to_numpy()
         self.y = self.data[["Outcome"]].to_numpy()
-        print(self.y.shape)
+        
+class artifical_neuron(file_management):
 
-    def
+    def __init__(self):
+        super().__init__()
+        self.weights = np.zeroes(8,1)
+        self.bias = 0
+        self.echoes =
+        
+
+    
