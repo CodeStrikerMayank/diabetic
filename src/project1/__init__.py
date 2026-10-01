@@ -1,6 +1,18 @@
 import pandas as pd
 import numpy as np 
+import time
+from rich.console import Console 
+from rich.live import Live
+console = Console()
+from rich.panel import Panel
+from rich.align import Align
+import threading as td
 
+
+
+
+"""File access and data extraction logic implementation here
+    And algorithm"""
 class file_management:
 
     def __init__(self):
@@ -24,7 +36,9 @@ class file_management:
             print("File not found")
             self.weights = np.zeros((8,1))
             self.bias = 0
+"""Artifical active neuron brian logic """
 class artifical_neuron(file_management):
+
 
     def __init__(self):
         super().__init__()
@@ -32,13 +46,21 @@ class artifical_neuron(file_management):
         self.echoes = 100000
         self.lrt = .001
 
+    def accuracy_df(self):
+        prediction = (self.pred>=0.5).astype(int)
+        accruacy = np.mean(prediction==self.y)*100
+        print("\033c")
+        print(f"Current accurancy is :- { accruacy:.2f}%")
+        time.sleep(.9)
+            
     def sigmoid(self,z):
         """So we acutally need clip function to create deafult limits like minimum will be -500 and 500 
         to prevent unwated infinity or Nan errors """
         z = np.clip(z,-500,500) 
         return 1.0/(1.0+np.exp(-z))
 
-    def neuron_brain_function(self):
+    def neuron_background_regression_function(self):
+        print("\033c")
         n  = len(self.x)
         for echo in range(self.echoes):
             z = np.dot(self.x,self.weights)+self.bias
@@ -46,12 +68,12 @@ class artifical_neuron(file_management):
             error = self.pred - self.y
             dw = np.dot(self.x.T , error)/n 
             db = np.sum(error)/n
-
+            
             self.weights -= dw * self.lrt
-            self.bias -= db * self.lrt
-
+            self.bias -= db * self.lrt 
+        self.accuracy_df()                 
         self.save_info()
             
-
+"""output show me and in best way"""
 a = artifical_neuron()
-a.neuron_brain_function()
+a.neuron_background_regression_function()
