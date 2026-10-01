@@ -8,13 +8,27 @@ class file_management:
         features = ["Pregnancies","Glucose","BloodPressure","SkinThickness","Insulin","BMI","DiabetesPedigreeFunction","Age"]
         self.x = self.data[features].to_numpy()
         self.y = self.data[["Outcome"]].to_numpy()
-        
+
+    def save_info(self):
+        payload = [{"weights":self.weights,"bias":self.bias}]
+        data = pd.DataFrame(payload)
+        data.to_json("core.json",orient="records",indent=4)
+
+    def file_logic(self):
+        try:
+            data = pd.read_json("core.json")
+            self.weights = np.array(data["weights"][0])
+            self.bias = data["bias"][0]
+            return 
+        except FileNotFoundError as err:
+            print("File not found")
+            self.weights = np.zeros((8,1))
+            self.bias = 0
 class artifical_neuron(file_management):
 
     def __init__(self):
         super().__init__()
-        self.weights = np.zeros((8,1))
-        self.bias = 0
+        self.file_logic()
         self.echoes = 100000
         self.lrt = .001
 
@@ -36,6 +50,7 @@ class artifical_neuron(file_management):
             self.weights -= dw * self.lrt
             self.bias -= db * self.lrt
 
+        self.save_info()
             
 
 a = artifical_neuron()
