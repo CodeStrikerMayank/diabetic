@@ -62,16 +62,29 @@ class artifical_neuron(file_management):
     def neuron_background_regression_function(self):
         print("\033c")
         n  = len(self.x)
-        for echo in range(self.echoes):
-            z = np.dot(self.x,self.weights)+self.bias
-            self.pred = self.sigmoid(z)
-            error = self.pred - self.y
-            dw = np.dot(self.x.T , error)/n 
-            db = np.sum(error)/n
-            
-            self.weights -= dw * self.lrt
-            self.bias -= db * self.lrt 
-        self.accuracy_df()                 
+        with Live(console=console, refresh_per_second=10) as live:
+            for echo in range(self.echoes):
+                z = np.dot(self.x,self.weights)+self.bias
+                self.pred = self.sigmoid(z)
+                error = self.pred - self.y
+                dw = np.dot(self.x.T , error)/n 
+                db = np.sum(error)/n
+                self.accuracy_df()                 
+                if echo % 100 == 0 or echo == self.echoes - 1:
+                        prediction = (self.pred >= 0.5).astype(int)
+                        accruacy = np.mean(prediction == self.y) * 100
+                        panel = Panel(
+                            Align.center(
+                                f"[bold cyan]Echo:[/bold cyan] {echo + 1}/{self.echoes}\n"
+                                f"[bold green]Current Accuracy:[/bold green] [bold yellow]{accruacy:.2f}%[/bold yellow]"
+                            ),
+                            title="[bold magenta]Artificial Neuron[/bold magenta]",
+                            border_style="cyan"
+                        )
+                        live.update(panel)
+                
+                self.weights -= dw * self.lrt
+                self.bias -= db * self.lrt 
         self.save_info()
             
 """output show me and in best way"""
